@@ -31,19 +31,40 @@
   <div class="bkimg">
     <img :src="seller.avatar"/>
   </div>
-  <div class="detail" v-show="detailShow">
-    <div class="detail-wrapper clearfix">
-      <div class="detail-main">
-        <div class="name">{{seller.name}}</div>
-        <div class="star-wrapper">
-          <star :score="seller.score" :size="48"></star>
+  <transition name="slide-fade">
+    <div class="detail" v-show="detailShow">
+      <div class="detail-wrapper clearfix">
+        <div class="detail-main">
+          <div class="name">{{seller.name}}</div>
+          <div class="star-wrapper">
+            <star :score="seller.score" :size="48"></star>
+          </div>
+          <div class="title">
+            <div class="line"></div>
+            <div class="text">优惠信息</div>
+            <div class="line"></div>
+          </div>
+          <ul v-if="seller.supports" class="supports">
+            <li class="support-item" v-for="(value,index) in seller.supports">
+              <span class="icon"></span>
+              <span class="text">{{seller.supports[index].description}}</span>
+            </li>
+          </ul>
+          <div class="title">
+            <div class="line"></div>
+            <div class="text">商家公告</div>
+            <div class="line"></div>
+          </div>
+          <div class="bulletin">
+            <p class="content">{{seller.bulletin}}</p>
+          </div>
         </div>
       </div>
+      <div class="detail-close" @click="hideDetail">
+        <i class="icon-close"></i>
+      </div>
     </div>
-    <div class="detail-close">
-      <i class="icon-close"></i>
-    </div>
-  </div>
+  </transition>
 </div>
 </template>
 
@@ -66,6 +87,9 @@ export default {
   methods: {
     showDetail(){
       this.detailShow = true;
+    },
+    hideDetail(){
+      this.detailShow = false;
     }
   },
   components: {
@@ -216,6 +240,60 @@ export default {
             padding: 2px 0;
             text-align: center;
           }
+          .title{
+            display: flex;
+            font-size: 0;
+            width:80%;
+            margin:30px auto 24px auto;
+            .line{
+              flex:1;
+              position: relative;
+              top:-6px;
+              border-bottom: 1px solid rgba(255,255,255,0.2);
+            }
+            .text{
+              padding: 0 12px;
+              font-size: 14px;
+              font-weight: 700;
+            }
+
+          }
+          .supports{
+            width: 80%;
+            margin:0 auto;
+            .support-item{
+              padding: 0 12px;
+              margin-bottom: 12px;
+              font-size: 0;
+              &:last-child{
+                margin-bottom: 0;
+              }
+              .icon{
+                display: inline-block;
+                height: 16px;
+                width:16px;
+                background-image: url("./decrease_1@2x.png");
+                background-size: 16px 16px;
+                background-repeat: no-repeat;
+                vertical-align: top;
+                margin-right: 6px;
+              }
+              .text{
+                line-height: 16px;
+                font-size: 12px;
+              }
+            }
+          }
+          .bulletin{
+            width: 80%;
+            margin:0 auto;
+            font-size: 0;
+            .content {
+              font-size: 12px;
+              padding: 0 12px;
+              line-height: 24px;
+            }
+          }
         }
       }
       .detail-close{
@@ -229,5 +307,14 @@ export default {
       }
     }
   }
-
+  .slide-fade-enter-active {
+    transition: all .3s ease;
+  }
+  .slide-fade-leave-active {
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+  .slide-fade-enter, .slide-fade-leave-active {
+    transform: translateX(10px);
+    opacity: 0;
+  }
 </style>

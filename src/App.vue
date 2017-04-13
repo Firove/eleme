@@ -9,7 +9,6 @@
       </ul>
     </div>
     <router-view></router-view>
-    <div id="content">我是内容</div>
   </div>
 </template>
 
