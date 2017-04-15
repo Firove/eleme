@@ -2,7 +2,7 @@
 <div class="goods">
   <div class="menu-wrapper" ref="menuWrapper">
     <ul>
-      <li v-for="(item , index) in goods" class="goodType border-1px" :class="{'current': currentIndex === index}">
+      <li v-for="(item , index) in goods" class="goodType border-1px" :class="{'current': currentIndex === index}" @click="selectMenu(index,$event)">
         <span class="text">
           <span class="icon" v-show="item.type > 0"></span>
           {{item.name}}
@@ -34,14 +34,16 @@
       </li>
     </ul>
   </div>
+  <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
 </div>
 </template>
 
 <script>
+  import shopcart from '../shopcart/shopcart.vue';
   import BScroll from 'better-scroll';
   const ERR_OK=0;
   export default {
-    pro: {
+    props: {
       seller: {
         type: Object
       }
@@ -62,7 +64,6 @@
             this._initScroll();
             this._calculateHeight();
           });
-
         }
       });
     },
@@ -71,9 +72,7 @@
         for(let i = 0;i<this.listHeight.length;i++){
           let height1 = this.listHeight[i];
           let height2 = this.listHeight[i+1];
-//           console.log(this.listHeight);
-          if(!height2 || (this.scrollY>=height1 && this.scrollY<height2)){
-//            console.log(i);
+          if(!height2|| (this.scrollY>=height1 && this.scrollY<height2)){
             return i;
           }
         }
@@ -82,13 +81,15 @@
     },
     methods: {
       _initScroll(){
-        this.menuScroll = new BScroll(this.$refs.menuWrapper, {});
+        this.menuScroll = new BScroll(this.$refs.menuWrapper, {
+          // 派发自定义的单击事件
+          click: true
+        });
         this.foodScroll= new BScroll(this.$refs.foodWrapper, {
-          probrType: 3
+          probeType: 3
         });
         this.foodScroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y));
-          console.log(this.scrollY);
         });
       },
       _calculateHeight(){
@@ -101,7 +102,19 @@
           this.listHeight.push(height);
         }
 
+      },
+      selectMenu(index, event){
+        // 自定义的单击事件里面有_constructed属性，而原生js事件中没有该_constructed属性
+        if(!event._constructed){
+          return;
+        }
+        let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook');
+        let el = foodList[index];
+        this.foodScroll.scrollToElement(el, 300);
       }
+    },
+    components: {
+      shopcart
     }
   };
 </script>
@@ -126,11 +139,7 @@
       width: 56px;
       padding: 0 12px;
       font-size: 0;
-      &.current{
-        background-color: white;
-        font-weight: 700;
-        margin-top: -1px;
-      }
+
       .icon{
         line-height: 14px;
         display: inline-block;
@@ -148,6 +157,15 @@
         vertical-align: middle;
         .mixin(rgba(7,17,27,0.1));
         font-size: 12px;
+      }
+      &.current{
+        background-color: white;
+        font-weight: 700;
+        margin-top: -1px;
+        z-index: 10;
+        .text{
+          .border-none();
+        }
       }
     }
   }
