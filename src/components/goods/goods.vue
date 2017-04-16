@@ -23,10 +23,13 @@
               <h2 class="name">{{food.name}}</h2>
               <p class="desc">{{food.description}}</p>
               <div class="extra">
-                <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rationg}}%</span>
+                <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rating}}%</span>
               </div>
               <div class="price">
                 <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+              </div>
+              <div class="control-wrapper">
+                <cartcontrol :food="food"></cartcontrol>
               </div>
             </div>
           </li>
@@ -40,6 +43,7 @@
 
 <script>
   import shopcart from '../shopcart/shopcart.vue';
+  import cartcontrol from '../cartcontrol/cartcontrol.vue';
   import BScroll from 'better-scroll';
   const ERR_OK=0;
   export default {
@@ -86,7 +90,8 @@
           click: true
         });
         this.foodScroll= new BScroll(this.$refs.foodWrapper, {
-          probeType: 3
+          probeType: 3,
+          click: true
         });
         this.foodScroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y));
@@ -114,7 +119,8 @@
       }
     },
     components: {
-      shopcart
+      shopcart,
+      cartcontrol
     }
   };
 </script>
@@ -231,8 +237,12 @@
             font-size: 10px;
             color: rgb(147, 153, 159);
 
-
           }
+        }
+        .control-wrapper{
+          position: absolute;
+          right: 0;
+          bottom: 12px;
         }
       }
 
