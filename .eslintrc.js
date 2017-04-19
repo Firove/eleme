@@ -31,6 +31,7 @@ module.exports = {
     "space-in-parens": 0,
     "keyword-spacing": 0,
     "semi-spacing": 0,
-    "space-infix-ops":0
+    "space-infix-ops":0,
+    "no-unused-vars": 0
   }
 }

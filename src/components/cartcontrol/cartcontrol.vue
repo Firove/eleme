@@ -1,11 +1,12 @@
 <template>
     <div class="cartcontrol">
-      <transition name="move">
-        <div class="cart-decrease" v-show="food.count > 0" @click="decCount($event)">
+      <transition-group name="move">
+        <div class="cart-decrease" v-show="food.count > 0" @click="decCount($event)" key="1">
             <span class="icon-remove_circle_outline"></span>
         </div>
-      </transition>
-      <div class="count" v-show="food.count > 0">{{food.count}}</div>
+        <div class="count" v-show="food.count > 0" key="2">{{food.count}}</div>
+      </transition-group>
+
       <div class="cart-add" @click="addCount($event)">
         <i class="icon-add_circle"></i>
       </div>
@@ -31,6 +32,7 @@
           }else{
             this.food.count ++;
           }
+          this.$emit('cartadd', event.target);
         },
         decCount(event) {
           if(!event._constructed){
@@ -80,23 +82,14 @@
     transition: all .3s linear;
     .icon-remove_circle_outline{
       transition: all .3s linear;
-
     }
   }
   .move-enter, .move-leave-active {
-    transform: translate3D(24px,0,0);
+    transform: translate3d(24px,0,0);
     opacity: 0;
     .icon-remove_circle_outline{
       transform: rotate(180deg);
     }
   }
-  /*.roll-enter-active,.roll-leave-active{*/
-    /*transition: all .3s linear;*/
-  /*}*/
-  /*.roll-enter, .roll-leave-active{*/
-    /*transform: rotate(180deg);*/
-  /*}*/
 }
-
-
 </style>

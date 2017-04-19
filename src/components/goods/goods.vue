@@ -29,7 +29,7 @@
                 <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
               </div>
               <div class="control-wrapper">
-                <cartcontrol :food="food"></cartcontrol>
+                <cartcontrol :food="food" @cartadd="_drop"></cartcontrol>
               </div>
             </div>
           </li>
@@ -37,7 +37,7 @@
       </li>
     </ul>
   </div>
-  <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+  <shopcart ref="shopcart" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :select-foods="selectFoods"></shopcart>
 </div>
 </template>
 
@@ -67,6 +67,7 @@
           this.$nextTick(() => {
             this._initScroll();
             this._calculateHeight();
+
           });
         }
       });
@@ -81,6 +82,17 @@
           }
         }
         return 0;
+      },
+      selectFoods() {
+        let foods=[];
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if(food.count){
+              foods.push(food);
+            }
+          });
+        });
+        return foods;
       }
     },
     methods: {
@@ -116,7 +128,14 @@
         let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook');
         let el = foodList[index];
         this.foodScroll.scrollToElement(el, 300);
+      },
+      _drop(target){
+        this.$nextTick(() => {
+          // 体验优化，异步执行下落动画
+          this.$refs.shopcart.drop(target);
+        });
       }
+
     },
     components: {
       shopcart,
