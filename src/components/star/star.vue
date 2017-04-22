@@ -88,7 +88,7 @@
       }
     }
   }
-  &.star.24 {
+  &.star-24 {
     .star-item{
       width: 10px;
       height: 10px;
